@@ -1,0 +1,134 @@
+---
+title: "Assignment_3_LIURUOBING"
+author: "LIURUOBING"
+date: "2022-11-03"
+output: word_document
+---
+
+## install.packages("tidyr")
+
+```{r}
+library(tidyr)
+```
+
+## Download the file price_index_Feb20201 and name it "price"
+
+```{r}
+price <- read.csv("C:/Users/13711/Desktop/price_index_Feb20201.csv")
+```
+
+##View the data
+
+```{r}
+price
+```
+
+##View the first five rows of data
+
+```{r}
+head(price,n=5)
+```
+
+##View the last four rows of data
+
+```{r}
+tail(price,n=4)
+```
+
+##Display the number and name of the data set variables
+
+```{r}
+names(price)
+```
+
+##View "price" data summary #We can see the name of each column of this data set, as well as the length of each column, the data classification type, and the data pattern type #From the summary of this data set, there are 10 columns, all 1203 in length, where the columns named TIME_REF and DATA_VAL are of numeric type, all of which have maximum value, minimum value, average and quartiles.
+
+```{r}
+summary(price)
+```
+
+##Show the complete structure of the data
+
+```{r}
+str(price)
+```
+
+##Quantifying the sample quantile of a variable for a given sample #According to the result, you can see how much data is in each quantile of the variable "DATA_VAL" of this sample
+
+```{r}
+quantile(price$DATA_VAL,na.rm=T)
+```
+
+##Used to detect the presence of missing values in the observation column
+
+```{r}
+sum(is.na(price$DATA_VAL))
+```
+
+##Used to monitor this dataset for missing values
+
+```{r}
+colSums((is.na(price)))
+all(colSums(is.na(price))==0)
+```
+
+##Used to find the value of specific characters #According to the setting, I can learn that the number of variables that are 1000 or 1133 in the variable DATA_VAL is 12, and the number of variables that are not is 1191
+
+```{r}
+table(price$DATA_VAL %in% c("1000","1133"))
+```
+
+##Find the location of a particular observation and export it as a new data set
+
+```{r}
+Specdata <- price[price$DATA_VAL %in% c("1000","1133"),]
+Specdata
+```
+
+##If the test value is valid, output good, otherwise output bad
+
+```{r}
+newprice <- ifelse(
+    price$DATA_VAL>1100,"good",
+    ifelse(
+        price$DATA_VAL<1000,"bad",
+        "not"
+    )
+)
+newprice
+```
+
+##install.packages("Hmisc")
+
+```{r}
+library(Hmisc)
+```
+
+## Use the cut2() function to segment the data,g is the required number of segments
+
+```{r}
+price$DATA_VAL <- cut2(price$TIME_REF,g=4)
+table(price$TIME_REF)
+```
+
+####################################### 
+
+##install.packages("plyr")
+
+```{r}
+library(Hmisc)
+library(plyr)
+price$Series_title_1 <- factor(price$Series_title_1)
+price$Series_title_1
+```
+
+##Sort DATA_VAL by Series_title_1 and name the generated list as x
+
+```{r}
+x <- split(price$DATA_VAL,price$Series_title_1)
+```
+
+##Use the sapply function to average the list of x
+
+```{r}
+sapply(x, mean)
